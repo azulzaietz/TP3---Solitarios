@@ -22,4 +22,4 @@ def crear_mazo(mazos=1, palos=4):
         mazo.apilar(carta, forzar=True)
     return mazo
 
-
+#prueba para actualizar desde pycharm
