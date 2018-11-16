@@ -1,5 +1,5 @@
 from carta import Carta
-from carta import criterio
+from carta import criterio, MISMO_PALO
 
 class SolitarioError(Exception):
     """Tipo de Exception para todos los errores del Solitario."""
@@ -83,12 +83,10 @@ class PilaCartas:
         elif self.pila_visible:
             mostrar =""
             for elemento in self.items:
-                mostrar += str(e)
+                mostrar += str(elemento)
             return mostrar
-        else:
-            return str(self.tope())
+        return str(self.tope())
 
     def __repr__(self):
         """Ídem __str__."""
         pass
-
