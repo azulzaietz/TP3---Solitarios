@@ -1,4 +1,6 @@
 from solitario_ejemplo import SolitarioEjemplo
+from mesa import SALIR
+from pila_cartas import SolitarioError
 
 SOLITARIOS = {
 	# "Nombre": (Clase, parámetros constructor),
