@@ -1,10 +1,7 @@
-import mesa
-import mazo
+from mesa import SALIR, FUNDACION, PILA_TABLERO
 from mazo import crear_mazo
-from pila_cartas import PilaCartas
-from carta import criterio
-from carta import MISMO_PALO
-
+from pila_cartas import PilaCartas, SolitarioError
+from carta import criterio, MISMO_PALO
 class SolitarioEjemplo:
     """
         SOLITARIO DE EJEMPLO
