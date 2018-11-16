@@ -17,7 +17,7 @@ def crear_mazo(mazos=1, palos=4):
     for p in palos:
         for i in range (1, 14):
             lista_mazo.append(Carta(i,p))
-    #lista_mazo = random.shuffle(lista_mazo) #PREGUNTAR POR RANDOM P OBJETOS
+    random.shuffle(lista_mazo) #PREGUNTAR POR RANDOM P OBJETOS #Era asi enzo, pero poniendo directo random. sin nada antes
     for carta in lista_mazo:
         mazo.apilar(carta, forzar=True)
     return mazo
