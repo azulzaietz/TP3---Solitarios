@@ -35,12 +35,20 @@ class SolitarioEliminador:
         """Efectúa una movida.
             La jugada es una lista de pares (PILA, numero). (Ver mesa.)
             Si no puede realizarse la jugada se levanta una excepción SolitarioError *descriptiva*."""
-        accion, lugar = jugada
-        if lugar <= 0 or lugar > len(self.mesa.fundaciones):
-            raise SolitarioError("La posicion indicada no es válida")
-        elif accion != SALIR:
-            self.mesa.fundaciones[int(lugar)-1].apilar(self.mesa.pilas_tablero[int(accion)-1])
+        pila1, cual1 = jugada[0]
+        pila2, cual2 = jugada[1]
+        print(jugada)
+        if pila1 == 0:
+            raise SolitarioError("Solo se puede mover cartas del tablero a las fundaciones, una vez en la fundacion no se puede mover mas")
+        elif pila1 == 1 and pila2 == 0:
+            if self.mesa.pilas_tablero[cual1].es_vacia():
+                raise SolitarioError("La pila está vacía")
+            try:
+                self.mesa.fundaciones[cual2].apilar(self.mesa.pilas_tablero[cual1].tope())
+                self.mesa.pilas_tablero[cual1].desapilar()
+                if not self.mesa.pilas_tablero[cual1].es_vacia() and self.mesa.pilas_tablero[cual1].tope().boca_abajo:
+                    self.mesa.pilas_tablero[cual1].tope().voltear()
+            except SolitarioError:
+                raise SolitarioError
 
-    def _carta_a_fundacion(self, pila, fundacion):
-        if self.mesa.fundaciones[fundacion].es_vacia() and not self.mesa.pilas_tablero[pila].es_vacia():
-            self.mesa.fundaciones[fundacion].apilar(self.mesa.pilas_tablero[pila])
+
