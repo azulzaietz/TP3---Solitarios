@@ -6,7 +6,7 @@ class Solitario...:
 
     def __init__(self, mesa):
         """Inicializa con una mesa creada y vacía."""
-        self.mesa = Mesa()
+        self.mesa = mesa
 
     def armar(self):
         """Arma el tablero con la configuración inicial."""
@@ -22,16 +22,16 @@ class Solitario...:
              #   self.mesa.pilas_tablero[e % len(self.mesa.pilas_tablero)].apilar(mazo.desapilar())
               #  e +=1
 
-            #while not mazo.es_vacia():
-             #   for pila in pilas_tablero:
-              #      pila.apilar(desapilar(mazo))
-
-
-
+            while not mazo.es_vacia():
+                for pila in pilas_tablero:
+                    pila.apilar(self.mesa.mazo.desapilar())
 
     def termino(self):
         """Avisa si el juego se terminó."""
-        pass
+        for pila in self.mesa.pilas_tablero:
+            if not pila.es_vacia():
+                return False
+        return True
 
     def jugar(self, jugada):
         """Efectúa una movida.

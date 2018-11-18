@@ -4,7 +4,7 @@ from pila_cartas import SolitarioError
 
 SOLITARIOS = {
 	# "Nombre": (Clase, parámetros constructor),
-        "Ejemplo": (SolitarioEjemplo, None),
+        "Ejemplo": (SolitarioEjemplo, None), "Eliminador": (SolitarioEliminador, None)
     }
 
 LOGFILE = 'solitario.log'
