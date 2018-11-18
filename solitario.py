@@ -1,7 +1,7 @@
 from mesa import Mesa
 from mazo import crear_mazo
 
-class Solitario...:
+class SolitarioEliminador:
     """Interfaz para implementar un solitario."""
 
     def __init__(self, mesa):
