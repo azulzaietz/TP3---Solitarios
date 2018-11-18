@@ -43,10 +43,11 @@ class SolitarioEliminador:
         elif pila1 == PILA_TABLERO and pila2 == FUNDACION:
             if self.mesa.pilas_tablero[cual1].es_vacia():
                 raise SolitarioError("La pila está vacía")
-
             self.mesa.fundaciones[cual2].apilar(self.mesa.pilas_tablero[cual1].tope())
             self.mesa.pilas_tablero[cual1].desapilar()
             if not self.mesa.pilas_tablero[cual1].es_vacia() and self.mesa.pilas_tablero[cual1].tope().boca_abajo:
                 self.mesa.pilas_tablero[cual1].tope().voltear()
+        else:
+            raise SolitarioError("Movimiento invalido")
 
 
