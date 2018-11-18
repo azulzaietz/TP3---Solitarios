@@ -77,11 +77,15 @@ class PilaCartas:
         cualquier valor.
         Debe levantarse SolitarioError en caso de no poder mover ninguna carta
         de origen a la pila."""
-        if self.criterio_apilar:
-            comp = self.criterio_apilar
-            return comp(self.tope(), origen.tope())
+        aux = PilaCartas(forzar=True)
+        for i in range(self.criterio_mover):
+            aux.apilar(origen.desapilar())
+        c = self.criterio_apilar
+        if c(self.tope(), aux.tope()):
+            while not aux.es_vacia():
+                self.apilar(aux.desapilar(), forzar=True)
         else:
-            return True
+            raise SolitarioError("No es posible el movimiento")
 
     def __str__(self):
         """Devuelve una representación de la pila.
