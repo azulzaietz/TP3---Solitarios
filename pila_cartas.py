@@ -57,7 +57,7 @@ class PilaCartas:
             if c(self.tope(), carta):
                 self.items.append(carta)
             else:
-                raise SolitarioError("No se puede apilar la carta")
+                raise SolitarioError("Esa carta no se puede apilar, intente con otra.")
 
     def desapilar(self):
         """Desapila una carta. Levanta SolitarioError en caso de no poder

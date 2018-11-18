@@ -1,11 +1,12 @@
-from solitario_ejemplo import SolitarioEjemplo
 from mesa import SALIR
 from pila_cartas import SolitarioError
-from solitario import SolitarioEliminador, SolitarioClasico
+from solitario import SolitarioEliminador, SolitarioClasico, SolitarioThumbAndPouch
 
 SOLITARIOS = {
 	# "Nombre": (Clase, parámetros constructor),
-        "Ejemplo": (SolitarioEjemplo, None), "Eliminador": (SolitarioEliminador, None), "Clasico": (SolitarioClasico, None),
+        "Eliminador": (SolitarioEliminador, None),
+        "Clasico": (SolitarioClasico, None),
+        "Thumb and Pouch": (SolitarioThumbAndPouch, None)
     }
 
 LOGFILE = 'solitario.log'
