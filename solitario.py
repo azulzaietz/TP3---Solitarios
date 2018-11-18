@@ -13,7 +13,7 @@ class SolitarioEliminador:
 
     def armar(self):
         """Arma el tablero con la configuración inicial."""
-        self.mesa.mazo = crear_mazo()
+        self.mesa.mazo = crear_mazo(mazos=1, palos=4)
 
         for i in range(6):
             self.mesa.fundaciones.append(PilaCartas(criterio_apilar=criterio(orden=CONSECUTIVA)))
@@ -38,7 +38,7 @@ class SolitarioEliminador:
         pila1, cual1 = jugada[0]
         pila2, cual2 = jugada[1]
         if pila1 == FUNDACION:
-            raise SolitarioError("Solo se puede mover cartas del tablero a las fundaciones, una vez en la fundacion no se puede mover mas")
+            raise SolitarioError("Solo se puede mover cartas del tablero a las fundaciones. \n Una vez en la fundacion, la carta no se puede mover mas")
         elif pila1 == PILA_TABLERO and pila2 == FUNDACION:
             if self.mesa.pilas_tablero[cual1].es_vacia():
                 raise SolitarioError("La pila está vacía")
@@ -58,11 +58,11 @@ class SolitarioClasico:
 
     def armar(self):
         """Arma el tablero con la configuración inicial."""
-        self.mesa.mazo = crear_mazo()
+        self.mesa.mazo = crear_mazo(mazos=1, palos=4)
         self.mesa.descarte = PilaCartas()
 
         for i in range(4):
-            self.mesa.fundaciones.append(PilaCartas(criterio_apilar=criterio(palo=MISMO_PALO, orden=DESCENDENTE)))
+            self.mesa.fundaciones.append(PilaCartas(criterio_apilar=criterio(palo=MISMO_PALO, orden=DESCENDENTE), valor_inicial=1))
 
         for i in range(4):
             self.mesa.pilas_tablero.append(PilaCartas(pila_visible=True, criterio_apilar=criterio(palo=DISTINTO_COLOR, orden=ASCENDENTE), criterio_mover=0))
@@ -74,10 +74,7 @@ class SolitarioClasico:
         total = 0
         for f in self.mesa.fundaciones:
             total += len(f.items)
-        if total == 52:
-            return True
-        else:
-            return False
+        return total == 52
 
     def jugar(self, jugada):
         """Efectúa una movida.
@@ -127,6 +124,50 @@ class SolitarioClasico:
                         self.mesa.pilas_tablero[en].criterio_mover += 1
                     else:
                         raise SolitarioError("Movimiento incorrecto")
+
+class SolitarioSpider:
+    """Interfaz para implementar un solitario."""
+
+    def __init__(self, mesa):
+        """Inicializa con una mesa creada y vacía."""
+        self.mesa = mesa
+
+    def armar(self):
+        """Arma el tablero con la configuración inicial."""
+        self.mesa.mazo = crear_mazo(mazos=2, palos=1)
+        print(len(self.mesa.mazo.items))
+
+        for i in range(8):
+            self.mesa.fundaciones.append(PilaCartas(criterio_apilar=criterio(orden=CONSECUTIVA), valor_inicial=13))
+
+        for i in range(10):
+            self.mesa.pilas_tablero.append(PilaCartas(pila_visible=True, criterio_apilar=criterio(orden=ASCENDENTE)))
+            for j in range(5):
+                self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar(), forzar=True)
+            if i in (1, 4, 7, 10):
+                self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar(), forzar=True)
+            self.mesa.pilas_tablero[i].tope().voltear()
+
+
+    def termino(self):
+        """Avisa si el juego se terminó."""
+        total = 0
+        for f in self.mesa.fundaciones:
+            total += len(f.items)
+        if total == 104:
+            return True
+        else:
+            return False
+
+    def jugar(self, jugada):
+        """Efectúa una movida.
+            La jugada es una lista de pares (PILA, numero). (Ver mesa.)
+            Si no puede realizarse la jugada se levanta una excepción SolitarioError *descriptiva*."""
+        if len(jugada) == 1 and jugada[0][0] == MAZO and not self.mesa.mazo.es_vacia():
+            for i in range(10):
+                self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar(), forzar=True)
+                self.mesa.pilas_tablero[i].tope().voltear()
+
 
 
 
