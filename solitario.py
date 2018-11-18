@@ -1,5 +1,8 @@
 from mesa import Mesa
 from mazo import crear_mazo
+from carta import criterio, CONSECUTIVA
+from mesa import SALIR, FUNDACION, PILA_TABLERO
+from pila_cartas import PilaCartas, SolitarioError
 
 class SolitarioEliminador:
     """Interfaz para implementar un solitario."""
@@ -22,8 +25,8 @@ class SolitarioEliminador:
              #   self.mesa.pilas_tablero[e % len(self.mesa.pilas_tablero)].apilar(mazo.desapilar())
               #  e +=1
 
-            while not mazo.es_vacia():
-                for pila in pilas_tablero:
+            while not self.mesa.mazo.es_vacia():
+                for pila in self.mesa.pilas_tablero:
                     pila.apilar(self.mesa.mazo.desapilar())
 
     def termino(self):
