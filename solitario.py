@@ -38,17 +38,15 @@ class SolitarioEliminador:
         pila1, cual1 = jugada[0]
         pila2, cual2 = jugada[1]
         print(jugada)
-        if pila1 == 0:
+        if pila1 == FUNDACION:
             raise SolitarioError("Solo se puede mover cartas del tablero a las fundaciones, una vez en la fundacion no se puede mover mas")
-        elif pila1 == 1 and pila2 == 0:
+        elif pila1 == PILA_TABLERO and pila2 == FUNDACION:
             if self.mesa.pilas_tablero[cual1].es_vacia():
                 raise SolitarioError("La pila está vacía")
-            try:
-                self.mesa.fundaciones[cual2].apilar(self.mesa.pilas_tablero[cual1].tope())
-                self.mesa.pilas_tablero[cual1].desapilar()
-                if not self.mesa.pilas_tablero[cual1].es_vacia() and self.mesa.pilas_tablero[cual1].tope().boca_abajo:
-                    self.mesa.pilas_tablero[cual1].tope().voltear()
-            except SolitarioError:
-                raise SolitarioError
+
+            self.mesa.fundaciones[cual2].apilar(self.mesa.pilas_tablero[cual1].tope())
+            self.mesa.pilas_tablero[cual1].desapilar()
+            if not self.mesa.pilas_tablero[cual1].es_vacia() and self.mesa.pilas_tablero[cual1].tope().boca_abajo:
+                self.mesa.pilas_tablero[cual1].tope().voltear()
 
 
