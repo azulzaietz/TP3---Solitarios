@@ -33,8 +33,8 @@ class SolitarioEjemplo:
 
             for j in range(4 + (1 if i < 4 else 0)):
                 # Barajamos cartas en nuestra pila
-                self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar())
-            self.mesa.pilas_tablero[i].tope().voltear() # Ponemos boca arriba la última carta.
+                self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar(), forzar=True)
+            self.mesa.pilas_tablero[i].tope().voltear()
 
     def termino(self):
         """Avisa si el juego se terminó."""

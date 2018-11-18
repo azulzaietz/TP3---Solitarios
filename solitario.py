@@ -20,14 +20,9 @@ class SolitarioEliminador:
 
         for i in range(4):
             self.mesa.pilas_tablero.append(PilaCartas(pila_visible=True))
-            #e = 0
-            #while not mazo.es_vacia():
-             #   self.mesa.pilas_tablero[e % len(self.mesa.pilas_tablero)].apilar(mazo.desapilar())
-              #  e +=1
-
-            while not self.mesa.mazo.es_vacia():
-                for pila in self.mesa.pilas_tablero:
-                    pila.apilar(self.mesa.mazo.desapilar())
+            for j in range(13):
+                self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar(), forzar=True)
+            self.mesa.pilas_tablero[i].tope().voltear()
 
     def termino(self):
         """Avisa si el juego se terminó."""
@@ -41,5 +36,11 @@ class SolitarioEliminador:
             La jugada es una lista de pares (PILA, numero). (Ver mesa.)
             Si no puede realizarse la jugada se levanta una excepción SolitarioError *descriptiva*."""
         accion, lugar = jugada
-        if lugar == 0:
+        if lugar <= 0 or lugar > len(self.mesa.fundaciones):
             raise SolitarioError("La posicion indicada no es válida")
+        elif accion != SALIR:
+            self.mesa.fundaciones[int(lugar)-1].apilar(self.mesa.pilas_tablero[int(accion)-1])
+
+    def _carta_a_fundacion(self, pila, fundacion):
+        if self.mesa.fundaciones[fundacion].es_vacia() and not self.mesa.pilas_tablero[pila].es_vacia():
+            self.mesa.fundaciones[fundacion].apilar(self.mesa.pilas_tablero[pila])

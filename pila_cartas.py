@@ -74,7 +74,11 @@ class PilaCartas:
         cualquier valor.
         Debe levantarse SolitarioError en caso de no poder mover ninguna carta
         de origen a la pila."""
-        pass
+        if self.criterio_apilar:
+            comp = self.criterio_apilar
+            return comp(self.tope(), origen.tope())
+        else:
+            return True
 
     def __str__(self):
         """Devuelve una representación de la pila.
