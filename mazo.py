@@ -21,3 +21,6 @@ def crear_mazo(mazos=1, palos=4):
     for carta in lista_mazo:
         mazo.apilar(carta, forzar=True)
     return mazo
+
+
+holnhvyu
