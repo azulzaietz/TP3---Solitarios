@@ -56,13 +56,13 @@ class PilaCartas:
             if carta.valor == self.valor_inicial:
                 self.items.append(carta)
             else:
-                raise SolitarioError("Esa carta no se puede apilar, intente con otra.")
+                raise SolitarioError("No se puede apilar la carta")
         elif not self.es_vacia():
             c = self.criterio_apilar
             if c(self.tope(), carta):
                 self.items.append(carta)
             else:
-                raise SolitarioError("Esa carta no se puede apilar, intente con otra.")
+                raise SolitarioError("No se puede apilar la carta")
 
     def desapilar(self):
         """Desapila una carta. Levanta SolitarioError en caso de no poder
@@ -103,7 +103,7 @@ class PilaCartas:
         elif self.pila_visible:
             mostrar =""
             for elemento in self.items:
-                mostrar += str(elemento)
+                mostrar += " {}".format(str(elemento))
             return mostrar
         return str(self.tope())
 
