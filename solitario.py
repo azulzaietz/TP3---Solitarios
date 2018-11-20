@@ -73,7 +73,7 @@ class SolitarioClasico:
 
     def armar(self):
         """Arma el tablero con la configuración inicial."""
-        self.mesa.mazo = crear_mazo()
+        self.mesa.mazo = crear_mazo(mazos=1, palos=4)
         self.mesa.descarte = PilaCartas()
 
         for i in range(4):
@@ -89,7 +89,10 @@ class SolitarioClasico:
         total = 0
         for f in self.mesa.fundaciones:
             total += len(f.items)
-        return total == 52
+        if total == 52:
+            return True
+        else:
+            return False
 
     def jugar(self, jugada):
         """Efectúa una movida.
@@ -109,21 +112,19 @@ class SolitarioClasico:
                 else:
                     self.mesa.fundaciones[hasta].apilar(self.mesa.pilas_tablero[en].tope())
                     self.mesa.pilas_tablero[en].desapilar()
-
             if origen == PILA_TABLERO and destino == PILA_TABLERO:
                 if self.mesa.pilas_tablero[en].es_vacia():
                     raise SolitarioError("La pila esta vacia, no hay elementos para mover")
+
                 else:
                     self.mesa.pilas_tablero[hasta].apilar(self.mesa.pilas_tablero[en].tope())
                     self.mesa.pilas_tablero[en].desapilar()
-
             if origen == FUNDACION and destino == PILA_TABLERO:
                 if self.mesa.fundaciones[en].es_vacia():
                     raise SolitarioError("La pila esta vacia, no hay elementos para mover")
                 else:
                     self.mesa.pilas_tablero[hasta].apilar(self.mesa.fundaciones[en].tope())
                     self.mesa.fundaciones[en].desapilar()
-
             if origen == DESCARTE and (destino == FUNDACION or destino == PILA_TABLERO):
                 if self.mesa.descarte.es_vacia():
                     raise SolitarioError("La pila esta vacia, no hay elementos para mover")
@@ -133,8 +134,6 @@ class SolitarioClasico:
                     else:
                         self.mesa.pilas_tablero[hasta].apilar(self.mesa.descarte.tope())
                     self.mesa.descarte.desapilar()
-
-
         elif len(jugada) > 2:
             origen, en = jugada[0]
             if origen == PILA_TABLERO:
@@ -144,8 +143,7 @@ class SolitarioClasico:
                     else:
                         raise SolitarioError("Movimiento incorrecto")
 
-
-class SolitarioThumbAndPouch:
+class SolitarioSpider:
     """Interfaz para implementar un solitario."""
 
     def __init__(self, mesa):
@@ -154,77 +152,41 @@ class SolitarioThumbAndPouch:
 
     def armar(self):
         """Arma el tablero con la configuración inicial."""
-        self.mesa.mazo = crear_mazo()
-        self.mesa.descarte = PilaCartas()
+        self.mesa.mazo = crear_mazo(mazos=2, palos=1)
+        print(len(self.mesa.mazo.items))
 
-        for i in range(4):
-            self.mesa.fundaciones.append(PilaCartas(criterio_apilar=criterio(palo=MISMO_PALO, orden=DESCENDENTE)))
+        for i in range(8):
+            self.mesa.fundaciones.append(PilaCartas(criterio_apilar=criterio(orden=CONSECUTIVA), valor_inicial=13))
 
-        for i in range(7):
-            self.mesa.pilas_tablero.append(PilaCartas(pila_visible=True))
-            for j in range(1 + i):
+        for i in range(10):
+            self.mesa.pilas_tablero.append(PilaCartas(pila_visible=True, criterio_apilar=criterio(orden=ASCENDENTE)))
+            for j in range(5):
+                self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar(), forzar=True)
+            if i in (1, 4, 7, 10):
                 self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar(), forzar=True)
             self.mesa.pilas_tablero[i].tope().voltear()
+
 
     def termino(self):
         """Avisa si el juego se terminó."""
         total = 0
         for f in self.mesa.fundaciones:
             total += len(f.items)
-        return total == 52
+        if total == 104:
+            return True
+        else:
+            return False
 
     def jugar(self, jugada):
         """Efectúa una movida.
             La jugada es una lista de pares (PILA, numero). (Ver mesa.)
             Si no puede realizarse la jugada se levanta una excepción SolitarioError *descriptiva*."""
-
         if len(jugada) == 1 and jugada[0][0] == MAZO and not self.mesa.mazo.es_vacia():
-            self.mesa.descarte.apilar(self.mesa.mazo.desapilar(), forzar=True)
-            self.mesa.descarte.tope().voltear()
+            for i in range(10):
+                self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar(), forzar=True)
+                self.mesa.pilas_tablero[i].tope().voltear()
 
-        elif len(jugada) == 2:
-            origen, en = jugada[0]
-            destino, hasta = jugada[1]
 
-            if origen == PILA_TABLERO and destino == FUNDACION:  # AGREGAR TEMA MOVER:
-                if self.mesa.pilas_tablero[en].es_vacia():
-                    raise SolitarioError("La pila esta vacia, no hay elementos para mover")
-                else:
-                    self.mesa.fundaciones[hasta].apilar(self.mesa.pilas_tablero[en].tope())
-                    self.mesa.pilas_tablero[en].desapilar()
-
-            if origen == PILA_TABLERO and destino == PILA_TABLERO:
-                if self.mesa.pilas_tablero[en].es_vacia():
-                    raise SolitarioError("La pila esta vacia, no hay elementos para mover")
-                else:
-                    self.mesa.pilas_tablero[hasta].apilar(self.mesa.pilas_tablero[en].tope())
-                    self.mesa.pilas_tablero[en].desapilar()
-
-            if origen == FUNDACION and destino == PILA_TABLERO:
-                if self.mesa.fundaciones[en].es_vacia():
-                    raise SolitarioError("La pila esta vacia, no hay elementos para mover")
-                else:
-                    self.mesa.pilas_tablero[hasta].apilar(self.mesa.fundaciones[en].tope())
-                    self.mesa.fundaciones[en].desapilar()
-
-            if origen == DESCARTE and (destino == FUNDACION or destino == PILA_TABLERO):
-                if self.mesa.descarte.es_vacia():
-                    raise SolitarioError("La pila esta vacia, no hay elementos para mover")
-                else:
-                    if destino == FUNDACION:
-                        self.mesa.fundaciones[hasta].apilar(self.mesa.descarte.tope())
-                    else:
-                        self.mesa.pilas_tablero[hasta].apilar(self.mesa.descarte.tope())
-                    self.mesa.descarte.desapilar()
-
-        elif len(jugada) > 2:
-            origen, en = jugada[0]
-            if origen == PILA_TABLERO:
-                for i in range(1, len(jugada) - 1):
-                    if jugada[i] == jugada[0]:
-                        self.mesa.pilas_tablero[en].criterio_mover += 1
-                    else:
-                        raise SolitarioError("Movimiento incorrecto")
 
 
 
