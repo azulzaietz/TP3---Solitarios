@@ -50,7 +50,7 @@ class SolitarioEliminador:
                     return
                 except SolitarioError:
                     pass
-            raise SolitarioError("No puede moverse esa carta a la fundación")
+            #raise SolitarioError("No puede moverse esa carta a ninguna fundación")
 
         if pila1 == FUNDACION:
             raise SolitarioError("Solo se pueden mover cartas del tablero a las fundaciones. \nUna vez en la fundacion, la carta no se puede mover mas")
@@ -99,9 +99,20 @@ class SolitarioClasico:
             La jugada es una lista de pares (PILA, numero). (Ver mesa.)
             Si no puede realizarse la jugada se levanta una excepción SolitarioError *descriptiva*."""
 
-        if len(jugada) == 1 and jugada[0][0] == MAZO and not self.mesa.mazo.es_vacia():
+        if len(jugada) == 1 and jugada[0][0] == PILA_TABLERO:
+            for fundacion in self.mesa.fundaciones:
+                try:
+                    fundacion.apilar(self.mesa.pilas_tablero[jugada[0][1]].tope())
+                    self.mesa.pilas_tablero[jugada[0][1]].desapilar()
+                    return
+                except SolitarioError:
+                    pass
+            #raise SolitarioError("No puede moverse esa carta a la fundación")
+
+        elif len(jugada) == 1 and jugada[0][0] == MAZO and not self.mesa.mazo.es_vacia():
             self.mesa.descarte.apilar(self.mesa.mazo.desapilar(), forzar=True)
             self.mesa.descarte.tope().voltear()
+
         elif len(jugada) == 2:
             origen, en = jugada[0]
             destino, hasta = jugada[1]
@@ -181,7 +192,18 @@ class SolitarioSpider:
         """Efectúa una movida.
             La jugada es una lista de pares (PILA, numero). (Ver mesa.)
             Si no puede realizarse la jugada se levanta una excepción SolitarioError *descriptiva*."""
-        if len(jugada) == 1 and jugada[0][0] == MAZO and not self.mesa.mazo.es_vacia():
+
+        if len(jugada) == 1 and jugada[0][0] == PILA_TABLERO:
+            for fundacion in self.mesa.fundaciones:
+                try:
+                    fundacion.apilar(self.mesa.pilas_tablero[jugada[0][1]].tope())
+                    self.mesa.pilas_tablero[jugada[0][1]].desapilar()
+                    return
+                except SolitarioError:
+                    pass
+            #raise SolitarioError("No puede moverse esa carta a la fundación")
+
+        elif len(jugada) == 1 and jugada[0][0] == MAZO and not self.mesa.mazo.es_vacia():
             for i in range(10):
                 self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar(), forzar=True)
                 self.mesa.pilas_tablero[i].tope().voltear()

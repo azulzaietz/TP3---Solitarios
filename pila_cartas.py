@@ -103,7 +103,7 @@ class PilaCartas:
         elif self.pila_visible:
             mostrar =""
             for elemento in self.items:
-                mostrar += str(elemento)
+                mostrar += " {}".format(str(elemento))
             return mostrar
         return str(self.tope())
 
