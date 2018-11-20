@@ -34,12 +34,11 @@ declaraciones. O sea, se dieron cuenta de que estaba al revés pero sería prefe
 implementaciones de los juegos (o sea, cuando crean las fundaciones está bien que sea ASCENDENTE porque
 se apilan de la A a la K, y con el error les quedó al revés).
 
-*) Si no arreglan termino() de Spider y de Clásico se van a recursar derecho :). ¿Cómo van a acceder
-a los items de la pila, cheeee?, ¡es una pila!, ¡no pueden acceder a las cosas internas de la
-implementación!, tienen tope() y es_vacia() para arreglarse :).
-#JAJAJAJA EL CHABON LE CLAVA CARITAS
+JAJAJAJA CREO QUE ESTA) Si no arreglan termino() de Spider y de Clásico se van a recursar derecho :).
+¿Cómo van a acceder a los items de la pila, cheeee?, ¡es una pila!, ¡no pueden acceder a las cosas
+internas de la implementación!, tienen tope() y es_vacia() para arreglarse :).
 
-*) La documentación de Spider dice que hay 10 pilas y que pasa algo en las pilas 1, 4, 7 y 10...
+CREO QUE ESTA) La documentación de Spider dice que hay 10 pilas y que pasa algo en las pilas 1, 4, 7 y 10...
 ¿no les hace ruido estar iterando sobre una i con range(10) y preguntar if i in (1, 4, 7, 10).
 Una vez que arreglen eso, ¿hay algo que puedan hacer con el operador módulo?
 

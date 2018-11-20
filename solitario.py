@@ -86,13 +86,11 @@ class SolitarioClasico:
 
     def termino(self):
         """Avisa si el juego se terminó."""
-        total = 0
-        for f in self.mesa.fundaciones:
-            total += len(f.items)
-        if total == 52:
-            return True
-        else:
-            return False
+        for pila in self.mesa.pilas_tablero:
+            if not pila.es_vacia():
+                return False
+        return self.mesa.mazo.es_vacia() and self.mesa.descarte.es_vacia()
+
 
     def jugar(self, jugada):
         """Efectúa una movida.
@@ -173,20 +171,17 @@ class SolitarioSpider:
             self.mesa.pilas_tablero.append(PilaCartas(pila_visible=True, criterio_apilar=criterio(orden=ASCENDENTE)))
             for j in range(5):
                 self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar(), forzar=True)
-            if i in (1, 4, 7, 10):
+            if i % 3 == 0:
                 self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar(), forzar=True)
             self.mesa.pilas_tablero[i].tope().voltear()
 
 
     def termino(self):
         """Avisa si el juego se terminó."""
-        total = 0
-        for f in self.mesa.fundaciones:
-            total += len(f.items)
-        if total == 104:
-            return True
-        else:
-            return False
+        for pila in self.mesa.pilas_tablero:
+            if not pila.es_vacia():
+                return False
+        return self.mesa.mazo.es_vacia() and self.mesa.descarte.es_vacia()
 
     def jugar(self, jugada):
         """Efectúa una movida.
