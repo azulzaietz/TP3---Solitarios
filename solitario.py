@@ -77,10 +77,10 @@ class SolitarioClasico:
         self.mesa.descarte = PilaCartas()
 
         for i in range(4):
-            self.mesa.fundaciones.append(PilaCartas(criterio_apilar=criterio(palo=MISMO_PALO, orden=DESCENDENTE), valor_inicial=1))
+            self.mesa.fundaciones.append(PilaCartas(criterio_apilar=criterio(palo=MISMO_PALO, orden=ASCENDENTE), valor_inicial=1))
 
         for i in range(4):
-            self.mesa.pilas_tablero.append(PilaCartas(pila_visible=True, criterio_apilar=criterio(palo=DISTINTO_COLOR, orden=ASCENDENTE), criterio_mover=0))
+            self.mesa.pilas_tablero.append(PilaCartas(pila_visible=True, criterio_apilar=criterio(palo=DISTINTO_COLOR, orden=DESCENDENTE), criterio_mover=0))
             self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar(), forzar=True)
             self.mesa.pilas_tablero[i].tope().voltear()
 
@@ -152,13 +152,16 @@ class SolitarioClasico:
                 if self.mesa.pilas_tablero[en].es_vacia():
                     raise SolitarioError("La pila esta vacia, no hay elementos para mover")
                 else:
-                    self.mesa.pilas_tablero[hasta].mover(self.mesa.pilas_tablero[en])
+                    destino = self.mesa.pilas_tablero[hasta]
+                    origen = self.mesa.pilas_tablero[en]
+                    self.mover_pilas_cartas(destino, origen)
 
             elif origen == FUNDACION and destino == PILA_TABLERO:
                 if self.mesa.fundaciones[en].es_vacia():
                     raise SolitarioError("La pila esta vacia, no hay elementos para mover")
                 else:
-                    self.mesa.pilas_tablero[hasta].mover(self.mesa.fundaciones[en])
+                    destino = self.mesa.pilas_tablero[hasta]
+                    origen = self.mesa.fundaciones[en]
 
             elif origen == DESCARTE and (destino == FUNDACION or destino == PILA_TABLERO):
                 if self.mesa.descarte.es_vacia():
@@ -170,14 +173,13 @@ class SolitarioClasico:
                         self.mesa.pilas_tablero[hasta].apilar(self.mesa.descarte.tope())
                     self.mesa.descarte.desapilar()
 
-        elif len(jugada) > 2:
-            origen, en = jugada[0]
-            if origen == PILA_TABLERO:
-                for i in range(1,len(jugada)-1):
-                    if jugada[i] == jugada[0]:
-                        self.mesa.pilas_tablero[en].criterio_mover += 1
-                    else:
-                        raise SolitarioError("Movimiento incorrecto")
+    def mover_pilas_cartas(self, destino, origen):
+        """Siendo origen una PilaCartas, la función apila sobre la PilaCartas destino en caso de ser posible, levanta un SolitarioError en caso contrario"""
+        aux = destino.mover(origen)
+        if aux.es_vacia():
+            raise SolitarioError("No se puede apilar ninguna carta")
+        while not aux.es_vacia():
+            destino.apilar(aux.desapilar())
 
 class SolitarioSpider:
     """Interfaz para implementar un solitario."""
@@ -195,7 +197,7 @@ class SolitarioSpider:
             self.mesa.fundaciones.append(PilaCartas(criterio_apilar=criterio(orden=CONSECUTIVA), valor_inicial=13))
 
         for i in range(10):
-            self.mesa.pilas_tablero.append(PilaCartas(pila_visible=True, criterio_apilar=criterio(orden=ASCENDENTE)))
+            self.mesa.pilas_tablero.append(PilaCartas(pila_visible=True, criterio_apilar=criterio(orden=DESCENDENTE)))
             for j in range(5):
                 self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar(), forzar=True)
             if i % 3 == 0:
@@ -218,8 +220,7 @@ class SolitarioSpider:
         if len(jugada) == 1 and jugada[0][0] == PILA_TABLERO:
             for fundacion in self.mesa.fundaciones:
                 try:
-                    fundacion.apilar(self.mesa.pilas_tablero[jugada[0][1]].tope())
-                    self.mesa.pilas_tablero[jugada[0][1]].desapilar()
+                    mover_pila_cartas(fundacion, self.mesa.pilas_tablero[jugada[0][1]].tope())
                     return
                 except SolitarioError:
                     pass
@@ -229,6 +230,31 @@ class SolitarioSpider:
             for i in range(10):
                 self.mesa.pilas_tablero[i].apilar(self.mesa.mazo.desapilar(), forzar=True)
                 self.mesa.pilas_tablero[i].tope().voltear()
+
+        elif len(jugada) == 2:
+            origen, en = jugada[0]
+            destino, hasta = jugada[1]
+
+            if origen == PILA_TABLERO and destino == PILA_TABLERO:
+                en = self.mesa.pilas_tablero[en]
+                hasta = self.mesa.pilas_tablero[hasta]
+                self.mover_pilas_cartas(hasta, en)
+
+            elif origen == PILA_TABLERO and destino == FUNDACION:
+                en = self.mesa.pilas_tablero[en]
+                hasta = self.mesa.fundaciones[hasta]
+                self.mover_pilas_cartas(hasta, en)
+            else:
+                raise SolitarioError("Movimiento invalido")
+
+    def mover_pilas_cartas(self, destino, origen):
+        """Siendo origen una PilaCartas, la función apila sobre la PilaCartas destino en caso de ser posible, levanta un SolitarioError en caso contrario"""
+        aux = destino.mover(origen)
+        if aux.es_vacia():
+            raise SolitarioError("No se puede apilar ninguna carta")
+        while not aux.es_vacia():
+                destino.apilar(aux.desapilar())
+
 
 
 

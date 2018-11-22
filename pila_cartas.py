@@ -1,5 +1,5 @@
 from carta import Carta
-from carta import criterio, MISMO_PALO
+from carta import criterio, MISMO_PALO, ASCENDENTE
 
 class SolitarioError(Exception):
     """Tipo de Exception para todos los errores del Solitario."""
@@ -50,7 +50,7 @@ class PilaCartas:
         """Apila una carta en la pila. Si forzar es True desactiva los chequeos
         sobre el valor_inicial y el criterio_apilar.
         Levanta SolitarioError en caso de no poder apilar."""
-        if forzar or self.es_vacia() and not self.valor_inicial:
+        if forzar or (self.es_vacia() and not self.valor_inicial):
             self.items.append(carta)
         elif self.es_vacia():
             if carta.valor == self.valor_inicial:
@@ -59,7 +59,7 @@ class PilaCartas:
                 raise SolitarioError("No se puede apilar la carta")
         elif not self.es_vacia():
             c = self.criterio_apilar
-            if c(self.tope(), carta):
+            if c(carta, self.tope()):
                 self.items.append(carta)
             else:
                 raise SolitarioError("No se puede apilar la carta")
@@ -82,23 +82,20 @@ class PilaCartas:
         cualquier valor.
         Debe levantarse SolitarioError en caso de no poder mover ninguna carta
         de origen a la pila."""
-        aux = PilaCartas()
+
+        aux = PilaCartas(criterio_apilar=criterio(orden=ASCENDENTE))
+        if not origen.es_vacia():
+            aux.apilar(origen.desapilar())
         while not origen.es_vacia():
-            aux.apilar(origen.tope(), forzar=True)
-            origen.desapilar()
-        while not aux.es_vacia():
             try:
-                self.apilar(aux.tope())
-                aux.desapilar()
+                aux.apilar(origen.tope())
+                origen.desapilar()
             except SolitarioError:
-                origen.apilar(aux.tope())
-                aux.desapilar()
-                try:
-                    self.apilar(aux.tope())
-                    aux.desapilar()
-                except SolitarioError:
-                    origen.apilar(aux.tope())
-                    aux.desapilar()
+                break
+        if not origen.es_vacia() and origen.tope().boca_abajo:
+            origen.tope().voltear()
+        return aux
+
 
     def __str__(self):
         """Devuelve una representación de la pila.
